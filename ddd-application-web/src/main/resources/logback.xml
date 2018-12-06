@@ -1,0 +1,55 @@
+<configuration>
+	<!-- <property name="LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%ex{5}" /> -->
+	<!-- <property name="LOG_PATTERN" value="%-28.28thread %d{dd-MM-yyyy HH:mm:ss.SSS} [%-5.5p] %-30.30class{1} %message%n" /> -->
+	<property name="LOG_PATTERN" value="%-8.8thread %d{dd-MM-yyyy HH:mm:ss.SSS} [%-5.5p] %-30.30class{1} %message%n" />
+	<property name="LOG_FILE_NAME" value="peps" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_FILE_NAME}.log</file>
+		<append>true</append>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_FILE_NAME}-%d.log.gz</fileNamePattern>
+		</rollingPolicy>
+		
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="SQL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_FILE_NAME}-sql.log</file>
+		<append>false</append> <!-- deletes the file on deploy -->
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_FILE_NAME}-sql-%d.log.gz</fileNamePattern>
+		</rollingPolicy>
+		
+		<encoder>
+			<pattern>%message%n</pattern>
+		</encoder>
+	</appender>
+	
+	
+	<!-- <logger name="com.bnpparibas.peps.utils.JdbcCall" level="INFO"/> -->
+	<logger name="plsql" level="INFO">
+		<appender-ref ref="SQL_LOG" />
+	</logger>
+	<logger name="com.bnpparibas" level="DEBUG"/>
+	<logger name="com.bnpparibas.peps.utils.JdbcCall" level="INFO"/>
+	
+	
+	
+	<logger name="org.springframework" level="INFO"/>
+	
+	<root level="INFO">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
